@@ -1,0 +1,113 @@
+volumes:
+  tango-db-dev:
+
+networks:
+  skif-1-7-net:
+    name: skif-1-7-net
+    driver: bridge
+
+services:
+  tango-db:
+    image: artefact.skao.int/ska-tango-images-tango-db:11.8.3
+    platform: linux/x86_64
+    volumes:
+      - tango-db-dev:/var/lib/mysql
+    networks:
+      - skif-1-7-net
+    environment:
+      - MARIADB_ROOT_PASSWORD=root
+      - MARIADB_DATABASE=tango
+      - MARIADB_USER=tango
+      - MARIADB_PASSWORD=tango
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect"]
+      start_period: 10s
+      interval: 500ms
+      timeout: 1s
+      retries: 3
+
+  tango-dbds:
+    image: artefact.skao.int/ska-tango-images-tango-databaseds:5.26.1
+    platform: linux/x86_64
+    networks:
+      - skif-1-7-net
+    ports:
+      - "10000:10000"
+    hostname: tango-dbds
+    environment:
+      - TANGO_HOST=localhost:10000
+      - MYSQL_HOST=tango-db:3306
+      - MYSQL_USER=tango
+      - MYSQL_PASSWORD=tango
+      - MYSQL_DATABASE=tango
+    depends_on:
+      tango-db:
+        condition: service_healthy
+    entrypoint: Databaseds
+    command:
+      - "2"
+      - -ORBendPoint
+      - giop:tcp::10000
+    healthcheck:
+      test: ["CMD", "sh", "-c", "/usr/local/bin/tango_admin --ping-database || exit 1"]
+      start_period: 10s
+      start_interval: 500ms
+      timeout: 3s
+      retries: 3
+
+  sardana-srv:
+    image: sardana-server
+    build:
+      context: ./dockerfiles/sardana-server
+    container_name: sardana-server
+    networks:
+      - skif-1-7-net
+    environment:
+      - TANGO_HOST=tango-dbds:10000
+    volumes:
+      - $BASE_DIR/sardana/controllers:/home/tango/controllers
+    depends_on:
+      tango-dbds:
+        condition: service_healthy
+    entrypoint: /home/tango/pytango-env/bin/Sardana 
+    command:
+      - "BL-1-7"
+
+  ohcc01:
+    image: ohcc01
+    build:
+      context: ./dockerfiles/tango-start
+    container_name: ohcc01
+    networks:
+      - skif-1-7-net
+    hostname: ohcc01
+    environment:
+      - TANGO_HOST=tango-dbds:10000
+    volumes:
+      - $BASE_DIR/tango/device_servers:/home/tango/ds
+    depends_on:
+      tango-dbds:
+        condition: service_healthy
+    entrypoint: /home/tango/Starter
+    command:
+      - "OHCCStarter"
+
+  ehcc01:
+    image: ehcc01
+    build:
+      context: ./dockerfiles/tango-start
+    container_name: ehcc01
+    networks:
+      - skif-1-7-net
+    hostname: ehcc01
+    environment:
+      - TANGO_HOST=tango-dbds:10000
+    volumes:
+      - $BASE_DIR/tango/device_servers:/home/tango/ds
+    depends_on:
+      tango-dbds:
+        condition: service_healthy
+    entrypoint: /home/tango/Starter
+    command:
+      - "EHCCStarter"
+

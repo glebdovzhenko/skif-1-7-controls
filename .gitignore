@@ -1,0 +1,5 @@
+.envrc
+.direnv
+tango_database.db
+db_backups/*.tar.gz
+**/__pycache__

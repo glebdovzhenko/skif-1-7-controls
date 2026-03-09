@@ -1,0 +1,94 @@
+#!/app/bin/python
+# -*- coding: utf-8 -*-
+
+from tango import DevState, AttrWriteType
+from tango.server import Device, attribute, command, run
+import threading
+
+from motor_emul import Motor
+
+
+class MotorEmul(Device):
+
+    Position = attribute(
+        dtype=float, access=AttrWriteType.READ_WRITE, unit="rad", label="Motor Position"
+    )
+
+    Velocity = attribute(
+        dtype=float, access=AttrWriteType.READ_WRITE, unit="rad/s", label="Velocity"
+    )
+
+    def init_device(self):
+        super().init_device()
+
+        self.motor = Motor()
+        self._velocity = 1.0
+        self._moving = False
+
+        self.set_state(DevState.ON)
+
+    # -------- Position --------
+
+    def read_Position(self):
+        return self.motor.pos()
+
+    def write_Position(self, value):
+        if self._moving:
+            return
+
+        self._moving = True
+        self.set_state(DevState.MOVING)
+
+        thread = threading.Thread(target=self._move, args=(value,))
+        thread.start()
+
+    def _move(self, value):
+        try:
+            self.motor.moveTo(value)
+        except Exception as e:
+            self.error_stream(str(e))
+            self.set_state(DevState.FAULT)
+        finally:
+            self._moving = False
+            self.set_state(DevState.ON)
+
+    # -------- Velocity --------
+
+    def read_Velocity(self):
+        return self._velocity
+
+    def write_Velocity(self, value):
+        self._velocity = value
+
+    # -------- Commands --------
+
+    @command(dtype_in=float)
+    def MoveRelative(self, delta):
+        if self._moving:
+            return
+
+        self._moving = True
+        self.set_state(DevState.MOVING)
+
+        thread = threading.Thread(target=self._shift, args=(delta,))
+        thread.start()
+
+    def _shift(self, delta):
+        try:
+            self.motor.shiftTo(delta)
+        except Exception as e:
+            self.error_stream(str(e))
+            self.set_state(DevState.FAULT)
+        finally:
+            self._moving = False
+            self.set_state(DevState.ON)
+
+    @command
+    def Stop(self):
+        # В эмуляторе реальной остановки нет
+        self._moving = False
+        self.set_state(DevState.ON)
+
+
+if __name__ == "__main__":
+    run([MotorEmul])
