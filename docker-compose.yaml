@@ -65,7 +65,7 @@ services:
     environment:
       - TANGO_HOST=tango-dbds:10000
     volumes:
-      - $BASE_DIR/sardana/controllers:/home/tango/controllers
+      - ./sardana/controllers:/home/tango/controllers
     depends_on:
       tango-dbds:
         condition: service_healthy
@@ -84,7 +84,7 @@ services:
     environment:
       - TANGO_HOST=tango-dbds:10000
     volumes:
-      - $BASE_DIR/tango/device_servers:/home/tango/ds
+      - ./tango/device_servers:/home/tango/ds
     depends_on:
       tango-dbds:
         condition: service_healthy
@@ -103,7 +103,7 @@ services:
     environment:
       - TANGO_HOST=tango-dbds:10000
     volumes:
-      - $BASE_DIR/tango/device_servers:/home/tango/ds
+      - ./tango/device_servers:/home/tango/ds
     depends_on:
       tango-dbds:
         condition: service_healthy
