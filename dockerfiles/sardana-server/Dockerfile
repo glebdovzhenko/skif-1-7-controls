@@ -32,4 +32,7 @@ python3 -m venv pytango-env
 /home/tango/pytango-env/bin/pip3 install six
 /home/tango/pytango-env/bin/pip3 install newportxps
 /home/tango/pytango-env/bin/pip3 install pyvisa
+/home/tango/pytango-env/bin/pip3 install pyvisa-py
+/home/tango/pytango-env/bin/pip3 install gpib
+/home/tango/pytango-env/bin/pip3 install gpib-ctypes
 EOF
