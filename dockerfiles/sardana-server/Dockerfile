@@ -27,3 +27,9 @@ python3 -m venv pytango-env
 /home/tango/pytango-env/bin/pip3 install itango
 EOF
 
+RUN <<EOF
+python3 -m venv pytango-env
+/home/tango/pytango-env/bin/pip3 install six
+/home/tango/pytango-env/bin/pip3 install newportxps
+/home/tango/pytango-env/bin/pip3 install pyvisa
+EOF
