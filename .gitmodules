@@ -1,0 +1,6 @@
+[submodule "sardana/controllers/sardana-NewportXPSMotorController"]
+	path = sardana/controllers/sardana-NewportXPSMotorController
+	url = https://github.com/glebdovzhenko/sardana-NewportXPSMotorController.git
+[submodule "sardana/controllers/sardana-Keithley6430ZeroDController"]
+	path = sardana/controllers/sardana-Keithley6430ZeroDController
+	url = https://github.com/MBI-Div-B/sardana-Keithley6430ZeroDController.git
