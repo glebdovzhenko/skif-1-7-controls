@@ -3,3 +3,4 @@
 tango_database.db
 db_backups/*.tar.gz
 **/__pycache__
+secrets.txt
