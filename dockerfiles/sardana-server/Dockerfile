@@ -39,13 +39,15 @@ ARG PYTHON_VERSION=3.12
 ARG PYTANGO_VERSION=9.5.0
 ARG SARDANA_VERSION=3.6.0
 
-RUN <<EOF
-micromamba install --yes \
+RUN micromamba install --yes \
 python=$PYTHON_VERSION \
 pytango=$PYTANGO_VERSION \
 sardana=$SARDANA_VERSION \
 h5py ipython itango
-EOF
+
+RUN micromamba install --yes \
+pyqtgraph \
+matplotlib
 
 ENV PATH=/opt/conda/bin:$PATH
 

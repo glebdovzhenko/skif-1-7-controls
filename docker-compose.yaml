@@ -69,7 +69,6 @@ services:
     depends_on:
       tango-dbds:
         condition: service_healthy
-    #entrypoint: /home/tango/pytango-env/bin/Sardana 
     entrypoint: Sardana 
     command:
       - "BL-1-7"
