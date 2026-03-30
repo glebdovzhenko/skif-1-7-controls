@@ -69,45 +69,46 @@ services:
     depends_on:
       tango-dbds:
         condition: service_healthy
-    entrypoint: /home/tango/pytango-env/bin/Sardana 
+    #entrypoint: /home/tango/pytango-env/bin/Sardana 
+    entrypoint: Sardana 
     command:
       - "BL-1-7"
 
-  ohcc01:
-    image: ohcc01
-    build:
-      context: ./dockerfiles/tango-start
-    container_name: ohcc01
-    networks:
-      - skif-1-7-net
-    hostname: ohcc01
-    environment:
-      - TANGO_HOST=tango-dbds:10000
-    volumes:
-      - ./tango/device_servers:/home/tango/ds
-    depends_on:
-      tango-dbds:
-        condition: service_healthy
-    entrypoint: /home/tango/Starter
-    command:
-      - "OHCCStarter"
+  #ohcc01:
+  #  image: ohcc01
+  #  build:
+  #    context: ./dockerfiles/tango-start
+  #  container_name: ohcc01
+  #  networks:
+  #    - skif-1-7-net
+  #  hostname: ohcc01
+  #  environment:
+  #    - TANGO_HOST=tango-dbds:10000
+  #  volumes:
+  #    - ./tango/device_servers:/home/tango/ds
+  #  depends_on:
+  #    tango-dbds:
+  #      condition: service_healthy
+  #  entrypoint: /home/tango/Starter
+  #  command:
+  #    - "OHCCStarter"
 
-  ehcc01:
-    image: ehcc01
-    build:
-      context: ./dockerfiles/tango-start
-    container_name: ehcc01
-    networks:
-      - skif-1-7-net
-    hostname: ehcc01
-    environment:
-      - TANGO_HOST=tango-dbds:10000
-    volumes:
-      - ./tango/device_servers:/home/tango/ds
-    depends_on:
-      tango-dbds:
-        condition: service_healthy
-    entrypoint: /home/tango/Starter
-    command:
-      - "EHCCStarter"
+  #ehcc01:
+  #  image: ehcc01
+  #  build:
+  #    context: ./dockerfiles/tango-start
+  #  container_name: ehcc01
+  #  networks:
+  #    - skif-1-7-net
+  #  hostname: ehcc01
+  #  environment:
+  #    - TANGO_HOST=tango-dbds:10000
+  #  volumes:
+  #    - ./tango/device_servers:/home/tango/ds
+  #  depends_on:
+  #    tango-dbds:
+  #      condition: service_healthy
+  #  entrypoint: /home/tango/Starter
+  #  command:
+  #    - "EHCCStarter"
 

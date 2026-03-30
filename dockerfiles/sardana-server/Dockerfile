@@ -1,4 +1,6 @@
-FROM ubuntu:resolute-20260108
+#FROM ubuntu:resolute-20260108
+FROM mambaorg/micromamba:git-5f62561-cuda11.8.0-ubuntu22.04
+USER root
 
 RUN <<EOF
 apt-get clean 
@@ -10,29 +12,21 @@ RUN <<EOF
 apt-get install -y openjdk-8-jdk zlib1g-dev libomniorb4-dev libcos4-dev omniidl libzmq3-dev 
 EOF
 
-RUN <<EOF
-apt-get install -y python3 python3-pip python3-venv
-EOF
-
 RUN useradd -ms /bin/bash tango 
 USER tango
 WORKDIR /home/tango
 
-RUN <<EOF
-python3 -m venv pytango-env
-/home/tango/pytango-env/bin/pip3 install h5py
-/home/tango/pytango-env/bin/pip3 install pytango
-/home/tango/pytango-env/bin/pip3 install sardana
-/home/tango/pytango-env/bin/pip3 install ipython
-/home/tango/pytango-env/bin/pip3 install itango
-EOF
+ARG PYTHON_VERSION=3.10
+ARG PYTANGO_VERSION=9.3.6
+#ARG SARDANA_VERSION=1.1.1
 
 RUN <<EOF
-python3 -m venv pytango-env
-/home/tango/pytango-env/bin/pip3 install six
-/home/tango/pytango-env/bin/pip3 install newportxps
-/home/tango/pytango-env/bin/pip3 install pyvisa
-/home/tango/pytango-env/bin/pip3 install pyvisa-py
-/home/tango/pytango-env/bin/pip3 install gpib
-/home/tango/pytango-env/bin/pip3 install gpib-ctypes
+micromamba install --yes \
+python=$PYTHON_VERSION \
+pytango=$PYTANGO_VERSION \
+sardana \
+h5py ipython itango
 EOF
+
+ENV PATH=/opt/conda/bin:$PATH
+
