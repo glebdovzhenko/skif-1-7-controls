@@ -1,6 +1,6 @@
 #docker run --rm -v skif-1-7-controls_tango-db-dev:/data -v "$(pwd)":/backup ubuntu:resolute-20260108 tar -czf "/backup/tango-db-dev-$(date +%Y-%m-%d).tar.gz" -C /data ./
 
-vprefix="skif-1-7-controls"
+vprefix="bl-1-7-controls"
 vtag="tango-db-dev"
 
 cmt=$(git rev-parse HEAD)
