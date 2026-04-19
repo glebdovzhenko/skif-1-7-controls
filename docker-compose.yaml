@@ -4,8 +4,8 @@ volumes:
   tango-db-dev:
 
 networks:
-  skif-1-7-net:
-    name: skif-1-7-net
+  bl-1-7-net:
+    name: bl-1-7-net
     driver: bridge
 
 services:
@@ -15,7 +15,7 @@ services:
     volumes:
       - tango-db-dev:/var/lib/mysql
     networks:
-      - skif-1-7-net
+      - bl-1-7-net
     environment:
       - MARIADB_ROOT_PASSWORD=root
       - MARIADB_DATABASE=tango
@@ -32,7 +32,7 @@ services:
     image: artefact.skao.int/ska-tango-images-tango-databaseds:5.26.1
     platform: linux/x86_64
     networks:
-      - skif-1-7-net
+      - bl-1-7-net
     ports:
       - "10000:10000"
     hostname: tango-dbds
@@ -63,7 +63,7 @@ services:
       context: ./dockerfiles/sardana-server
     container_name: sardana-server
     networks:
-      - skif-1-7-net
+      - bl-1-7-net
     environment:
       - TANGO_HOST=tango-dbds:10000
     volumes:
@@ -81,7 +81,7 @@ services:
       context: ./dockerfiles/tango-start
     container_name: ohcc01
     networks:
-      - skif-1-7-net
+      - bl-1-7-net
     hostname: ohcc01
     environment:
       - TANGO_HOST=tango-dbds:10000
@@ -100,7 +100,7 @@ services:
       context: ./dockerfiles/tango-start
     container_name: ehcc01
     networks:
-      - skif-1-7-net
+      - bl-1-7-net
     hostname: ehcc01
     environment:
       - TANGO_HOST=tango-dbds:10000
